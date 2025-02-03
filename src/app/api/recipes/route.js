@@ -1,110 +1,64 @@
 import { NextResponse } from 'next/server';
+import OpenAI from 'openai';
 
-const fetchHuggingFaceResponse = async (prompt, retries = 3) => {
-  for (let i = 0; i < retries; i++) {
-    console.log(`📌 Intento ${i + 1} de ${retries}...`);
-    const response = await fetch(
-      "https://api-inference.huggingface.co/models/tiiuae/falcon-7b-instruct", // 🔥 Modelo mejorado
-      {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ inputs: prompt }),
-      }
-    );
-
-    const data = await response.json();
-
-    if (data.error && data.error.includes("currently loading")) {
-      console.log(`⏳ Modelo aún cargando... Esperando 30 segundos antes de reintentar.`);
-      await new Promise((resolve) => setTimeout(resolve, 30000)); // Espera 30 segundos
-    } else {
-      return data;
-    }
-  }
-  throw new Error("El modelo no terminó de cargar a tiempo.");
-};
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY, // API Key de OpenAI
+});
 
 export async function POST(request) {
   try {
-    const { ingredients } = await request.json();
+    const { ingredients, difficulty, appliances, timestamp } = await request.json();
     console.log("📌 Ingredientes recibidos:", ingredients);
+    console.log("📌 Dificultad:", difficulty);
+    console.log("📌 Electrodomésticos:", appliances);
+    console.log("📌 API Key usada:", process.env.OPENAI_API_KEY ? "Cargada correctamente" : "NO CARGADA");
 
     if (!ingredients || ingredients.length === 0) {
       console.error("❌ Error: No se enviaron ingredientes.");
       return NextResponse.json({ error: "Debes proporcionar ingredientes." }, { status: 400 });
     }
 
-    console.log("📌 API Key usada:", process.env.HUGGINGFACE_API_KEY ? "Cargada correctamente" : "NO CARGADA");
+    // Generar variabilidad con un número aleatorio
+    const randomFactor = Math.random();
 
-    // 🔥 MEJORAMOS EL PROMPT PARA OBLIGAR A LA IA A DEVOLVER JSON PURO
+    // Modificar el prompt para forzar una nueva receta si se genera otra
     const prompt = `
-    Eres un asistente de cocina experto. Genera una receta en **formato JSON puro** usando SOLO estos ingredientes: ${ingredients.join(', ')}.
+      Eres un chef profesional y vas a crear una receta para usuarios en casa.
+      **Genera una receta DIFERENTE cada vez que se te pida, incluso con los mismos ingredientes.**
+      Usa SOLO estos ingredientes: ${ingredients.join(', ')}.
+      La dificultad de la receta debe ser "${difficulty}".
+      Electrodomésticos disponibles: ${appliances.join(", ") || "ninguno"}.
 
-    🔹 **Reglas:**
-    1. **NO EXPLIQUES nada.**
-    2. **No devuelvas texto adicional, solo el JSON.**
-    3. **NO uses etiquetas HTML, código o explicaciones.**
+      ### Instrucciones:
+      1. **Formato de respuesta:** SOLO JSON válido, sin texto adicional.
+      2. **No repitas recetas anteriores.** Usa combinaciones diferentes de los ingredientes.
+      3. **Dale un giro creativo a la receta, incluyendo un estilo de cocina diferente (ej. italiana, asiática, etc.).**
+      4. **Usa técnicas variadas:** hornear, freír, marinar, saltear, etc.
 
-    🔹 **Formato esperado:**
-    {
-      "title": "Nombre de la receta",
-      "ingredients": ["ingrediente1", "ingrediente2"],
-      "steps": ["paso 1", "paso 2"],
-      "tips": "Consejos opcionales"
-    }
+      ### Estructura esperada:
+      {
+        "title": "Nombre de la receta",
+        "ingredients": ["ingrediente1", "ingrediente2"],
+        "steps": ["paso 1", "paso 2"],
+        "tips": "Consejo opcional"
+      }
 
-    🔹 **Ejemplo correcto:**
-    {
-      "title": "Pollo al limón",
-      "ingredients": ["pollo", "limón", "arroz"],
-      "steps": ["Exprime el limón", "Cocina el arroz", "Sirve el pollo"],
-      "tips": "Puedes añadir pimienta negra"
-    }
+      **Este es un intento único (${randomFactor})**, así que asegúrate de que la receta sea completamente nueva.
+      `;
 
-    ⚠️ **Tu respuesta debe ser SOLO el JSON.** Sin comentarios, sin formato adicional.
-    `;
+    console.log("📌 Enviando prompt a OpenAI...");
 
-    console.log("📌 Enviando prompt a Hugging Face...");
+    const response = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo", 
+      messages: [{ role: "user", content: prompt }],
+      response_format: { type: "json_object" }, 
+      temperature: 1.2, // 🔥 Mayor aleatoriedad en la generación de recetas
+    });
 
-    const data = await fetchHuggingFaceResponse(prompt);
-    console.log("📌 Respuesta de Hugging Face:", data);
+    const recipe = response.choices[0].message.content;
+    console.log("📌 Receta generada:", recipe);
 
-    if (!data || !data.length || !data[0].generated_text) {
-      throw new Error("No se recibió una respuesta válida de Hugging Face.");
-    }
-
-    const textResponse = data[0].generated_text.trim();
-    console.log("📌 Texto recibido del modelo:", textResponse);
-
-    // 🔹 Intentar extraer JSON usando regex
-    const jsonMatch = textResponse.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      console.error("❌ No se encontró JSON en la respuesta.");
-      return NextResponse.json({ error: "La IA no generó un JSON válido." }, { status: 500 });
-    }
-
-    let recipe;
-    try {
-      recipe = JSON.parse(jsonMatch[0]); // 🔥 Extrae solo el JSON
-    } catch (parseError) {
-      console.error("❌ Error al parsear JSON:", parseError);
-      return NextResponse.json({ error: "Error al interpretar la respuesta de la IA." }, { status: 500 });
-    }
-
-    // Asegurar que el objeto tiene las propiedades necesarias
-    const formattedRecipe = {
-      title: recipe.title || "Receta generada",
-      ingredients: Array.isArray(recipe.ingredients) ? recipe.ingredients : [],
-      steps: Array.isArray(recipe.steps) ? recipe.steps : [],
-      tips: recipe.tips || "",
-    };
-
-    console.log("📌 Receta formateada:", formattedRecipe);
-
-    return NextResponse.json(formattedRecipe);
+    return NextResponse.json(JSON.parse(recipe));
   } catch (error) {
     console.error("❌ Error en la API:", error);
     return NextResponse.json({ error: "Error al generar la receta." }, { status: 500 });
