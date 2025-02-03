@@ -2,39 +2,40 @@ import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY, // API Key de OpenAI
+  apiKey: process.env.OPENAI_API_KEY, 
 });
 
 export async function POST(request) {
   try {
-    const { ingredients, difficulty, appliances, timestamp } = await request.json();
+    const { ingredients, difficulty, mealType, diet, portions, appliances, regeneratePart } = await request.json();
     console.log("📌 Ingredientes recibidos:", ingredients);
-    console.log("📌 Dificultad:", difficulty);
+    console.log("📌 Filtros -> Dificultad:", difficulty, "| Tipo de comida:", mealType, "| Dieta:", diet, "| Porciones:", portions);
     console.log("📌 Electrodomésticos:", appliances);
-    console.log("📌 API Key usada:", process.env.OPENAI_API_KEY ? "Cargada correctamente" : "NO CARGADA");
+    console.log("📌 Regenerar parte:", regeneratePart);
 
     if (!ingredients || ingredients.length === 0) {
-      console.error("❌ Error: No se enviaron ingredientes.");
       return NextResponse.json({ error: "Debes proporcionar ingredientes." }, { status: 400 });
     }
 
-    // Generar variabilidad con un número aleatorio
+    // Factor aleatorio para asegurar variabilidad en las respuestas
     const randomFactor = Math.random();
 
-    // Modificar el prompt para forzar una nueva receta si se genera otra
-    const prompt = `
-      Eres un chef profesional y vas a crear una receta para usuarios en casa.
-      **Genera una receta DIFERENTE cada vez que se te pida, incluso con los mismos ingredientes.**
-      Usa SOLO estos ingredientes: ${ingredients.join(', ')}.
-      La dificultad de la receta debe ser "${difficulty}".
-      Electrodomésticos disponibles: ${appliances.join(", ") || "ninguno"}.
+    // Construcción del prompt según la opción seleccionada
+    let prompt = `
+      Eres un chef profesional. Debes generar una receta en base a los siguientes parámetros:
+      - Ingredientes disponibles: ${ingredients.join(', ')}
+      - Dificultad: ${difficulty}
+      - Tipo de comida: ${mealType}
+      - Dieta: ${diet}
+      - Porciones: ${portions}
+      - Electrodomésticos disponibles: ${appliances.join(', ') || "ninguno"}
 
       ### Instrucciones:
-      1. **Formato de respuesta:** SOLO JSON válido, sin texto adicional.
-      2. **No repitas recetas anteriores.** Usa combinaciones diferentes de los ingredientes.
-      3. **Dale un giro creativo a la receta, incluyendo un estilo de cocina diferente (ej. italiana, asiática, etc.).**
-      4. **Usa técnicas variadas:** hornear, freír, marinar, saltear, etc.
-
+      1. Formato de salida: SOLO JSON válido, sin texto adicional.
+      2. Si regenerarPart es "ingredientes", cambia solo los ingredientes pero mantén los pasos y el título.
+      3. Si regenerarPart es "pasos", cambia solo los pasos pero mantén los ingredientes y el título.
+      4. Usa combinaciones creativas para evitar recetas repetidas.
+      
       ### Estructura esperada:
       {
         "title": "Nombre de la receta",
@@ -43,16 +44,18 @@ export async function POST(request) {
         "tips": "Consejo opcional"
       }
 
-      **Este es un intento único (${randomFactor})**, así que asegúrate de que la receta sea completamente nueva.
-      `;
+      ### Los steps deben ser claros y detallados, incluyendo cantidades y tiempos de cocción.
+      
+      Genera una receta completamente nueva basada en estos parámetros. Este intento (${randomFactor}) debe ser diferente.
+    `;
 
     console.log("📌 Enviando prompt a OpenAI...");
 
     const response = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo", 
+      model: "gpt-3.5-turbo",
       messages: [{ role: "user", content: prompt }],
       response_format: { type: "json_object" }, 
-      temperature: 1.2, // 🔥 Mayor aleatoriedad en la generación de recetas
+      temperature: 1.2, 
     });
 
     const recipe = response.choices[0].message.content;

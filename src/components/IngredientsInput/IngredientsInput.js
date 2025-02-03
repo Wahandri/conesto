@@ -7,16 +7,19 @@ const IngredientInput = () => {
   const [ingredients, setIngredients] = useState([]);
   const [recipe, setRecipe] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
-  const [difficulty, setDifficulty] = useState("media"); // 🔥 Nueva opción de dificultad (dropdown)
+  const [difficulty, setDifficulty] = useState("media"); 
+  const [mealType, setMealType] = useState("comida"); 
+  const [diet, setDiet] = useState("ninguna"); 
+  const [portions, setPortions] = useState(2);
   const [showApplianceModal, setShowApplianceModal] = useState(false);
   const [selectedAppliances, setSelectedAppliances] = useState([
     "sartén", "horno", "microondas",
-  ]); // 🔥 Electrodomésticos por defecto
+  ]); 
 
   const appliancesList = [
     "sartén", "horno", "microondas", "olla a presión", "barbacoa",
     "freidora de aire", "batidora", "cocina de gas", "cocina eléctrica",
-  ]; // 🔥 Lista completa de electrodomésticos
+  ]; 
 
   const handleAddIngredient = (e) => {
     e.preventDefault();
@@ -27,16 +30,8 @@ const IngredientInput = () => {
     }
   };
 
-  const toggleAppliance = (appliance) => {
-    setSelectedAppliances((prev) =>
-      prev.includes(appliance)
-        ? prev.filter((a) => a !== appliance)
-        : [...prev, appliance]
-    );
-  };
-
   const fetchRecipe = async () => {
-    setErrorMessage(""); // Limpiar mensajes anteriores
+    setErrorMessage(""); 
     try {
       const response = await fetch("/api/recipes", {
         method: "POST",
@@ -44,8 +39,10 @@ const IngredientInput = () => {
         body: JSON.stringify({ 
           ingredients, 
           difficulty, 
-          appliances: selectedAppliances,
-          timestamp: Date.now() // 🔥 Agregamos un timestamp para forzar variación
+          mealType, 
+          diet, 
+          portions, 
+          appliances: selectedAppliances
         }),
       });
 
@@ -65,13 +62,60 @@ const IngredientInput = () => {
 
   return (
     <div className="ingredient-input">
-      {/* Selector de dificultad (Dropdown) */}
+      {/* Selectores de filtros */}
       <label className="difficulty-label">Dificultad:</label>
       <select className="difficulty-select" value={difficulty} onChange={(e) => setDifficulty(e.target.value)}>
         <option value="rápida">Rápida/Sencilla</option>
         <option value="media">Media</option>
         <option value="pro">Pro</option>
       </select>
+
+      <label className="meal-label">Tipo de comida:</label>
+      <select className="meal-select" value={mealType} onChange={(e) => setMealType(e.target.value)}>
+        <option value="desayuno">Desayuno</option>
+        <option value="comida">Comida</option>
+        <option value="cena">Cena</option>
+        <option value="postre">Postre</option>
+      </select>
+
+      <label className="diet-label">Dieta:</label>
+      <select className="diet-select" value={diet} onChange={(e) => setDiet(e.target.value)}>
+        <option value="ninguna">Ninguna</option>
+        <option value="vegana">Vegana</option>
+        <option value="vegetariana">Vegetariana</option>
+        <option value="baja en calorías">Baja en Calorías</option>
+        <option value="sin gluten">Sin Gluten</option>
+        <option value="keto">Keto</option>
+        <option value="alta en proteínas">Alta en Proteínas</option>
+      </select>
+
+      <label className="portions-label">Porciones:</label>
+      <input 
+        type="number" 
+        min="1" 
+        max="10" 
+        value={portions} 
+        onChange={(e) => setPortions(e.target.value)} 
+        className="portions-input"
+      />
+
+      {/* Formulario para añadir ingredientes */}
+      <form onSubmit={handleAddIngredient} className="ingredient-form">
+        <input type="text" placeholder="Ej: Pollo, arroz, limón..." className="ingredient-field" />
+        <button type="submit" className="ingredient-button">Añadir</button>
+      </form>
+
+      {/* Lista de ingredientes */}
+      {ingredients.length > 0 && (
+        <div className="ingredient-list-container">
+          <ul className="ingredient-list">
+            {ingredients.map((ingredient, index) => (
+              <li key={index} className="ingredient-item">{ingredient}</li>
+            ))}
+          </ul>
+          <button onClick={() => setIngredients([])} className="ingredient-button-clear">X</button>
+        </div>
+      )}
 
       {/* Botón para seleccionar electrodomésticos */}
       <button className="appliance-button" onClick={() => setShowApplianceModal(true)}>
@@ -88,7 +132,11 @@ const IngredientInput = () => {
                 <input
                   type="checkbox"
                   checked={selectedAppliances.includes(appliance)}
-                  onChange={() => toggleAppliance(appliance)}
+                  onChange={() => setSelectedAppliances((prev) =>
+                    prev.includes(appliance)
+                      ? prev.filter((a) => a !== appliance)
+                      : [...prev, appliance]
+                  )}
                 />
                 {appliance}
               </label>
@@ -97,27 +145,6 @@ const IngredientInput = () => {
           </div>
         </div>
       )}
-      
-      <div>
-        <h3>Añadir Ingredientes</h3>
-        {/* Formulario de entrada */}
-        <form onSubmit={handleAddIngredient} className="ingredient-form">
-          <input type="text" placeholder="Ej: Pollo, arroz, limón..." className="ingredient-field" />
-          <button type="submit" className="ingredient-button">Añadir</button>
-        </form>
-
-        {/* Lista de ingredientes */}
-        {ingredients.length > 0 && (
-          <div className="ingredient-list-container">
-            <ul className="ingredient-list">
-              {ingredients.map((ingredient, index) => (
-                <li key={index} className="ingredient-item">{ingredient}</li>
-              ))}
-            </ul>
-            <button onClick={() => setIngredients([])} className="ingredient-button-clear">X</button>
-          </div>
-        )}
-      </div>
 
       {/* Botón para generar receta */}
       <button onClick={fetchRecipe} className="generate-button">Generar Receta</button>
@@ -139,8 +166,8 @@ const IngredientInput = () => {
           </ol>
           {recipe.tips && <p className="recipe-tips">💡 {recipe.tips}</p>}
 
-          {/* Botón para solicitar una nueva receta */}
-          <button onClick={fetchRecipe} className="new-recipe-button">Generar Otra Receta</button>
+          {/* Botón para generar otra receta completamente nueva */}
+          <button onClick={fetchRecipe} className="new-recipe-button">🔄 Generar Otra Receta</button>
         </div>
       )}
     </div>
