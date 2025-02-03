@@ -1,8 +1,31 @@
+.filters-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-left: 20px;
+  margin-right: 20px;
+  align-items: center;
+  margin-top: 20px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.ingredients-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 800px;
+}
+
+
 /* CSS para selector de ingredientes */
 .ingredient-input {
     margin-top: 20px;
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 10px;
   }
   
@@ -10,6 +33,7 @@
     display: flex;
     gap: 10px;
     justify-content: center;
+    width:100px;
   }
   
   .ingredient-field {

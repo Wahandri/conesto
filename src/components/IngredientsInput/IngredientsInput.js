@@ -63,64 +63,67 @@ const IngredientInput = () => {
   return (
     <div className="ingredient-input">
       {/* Selectores de filtros */}
-      <label className="difficulty-label">Dificultad:</label>
-      <select className="difficulty-select" value={difficulty} onChange={(e) => setDifficulty(e.target.value)}>
-        <option value="rápida">Rápida/Sencilla</option>
-        <option value="media">Media</option>
-        <option value="pro">Pro</option>
-      </select>
+      <div className="filters-container">
+        <label className="difficulty-label">Dificultad:</label>
+        <select className="difficulty-select" value={difficulty} onChange={(e) => setDifficulty(e.target.value)}>
+          <option value="rápida">Rápida/Sencilla</option>
+          <option value="media">Media</option>
+          <option value="pro">Pro</option>
+        </select>
 
-      <label className="meal-label">Tipo de comida:</label>
-      <select className="meal-select" value={mealType} onChange={(e) => setMealType(e.target.value)}>
-        <option value="desayuno">Desayuno</option>
-        <option value="comida">Comida</option>
-        <option value="cena">Cena</option>
-        <option value="postre">Postre</option>
-      </select>
+        <label className="meal-label">Tipo de comida:</label>
+        <select className="meal-select" value={mealType} onChange={(e) => setMealType(e.target.value)}>
+          <option value="desayuno">Desayuno</option>
+          <option value="comida">Comida</option>
+          <option value="cena">Cena</option>
+          <option value="postre">Postre</option>
+        </select>
 
-      <label className="diet-label">Dieta:</label>
-      <select className="diet-select" value={diet} onChange={(e) => setDiet(e.target.value)}>
-        <option value="ninguna">Ninguna</option>
-        <option value="vegana">Vegana</option>
-        <option value="vegetariana">Vegetariana</option>
-        <option value="baja en calorías">Baja en Calorías</option>
-        <option value="sin gluten">Sin Gluten</option>
-        <option value="keto">Keto</option>
-        <option value="alta en proteínas">Alta en Proteínas</option>
-      </select>
+        <label className="diet-label">Dieta:</label>
+        <select className="diet-select" value={diet} onChange={(e) => setDiet(e.target.value)}>
+          <option value="ninguna">Ninguna</option>
+          <option value="vegana">Vegana</option>
+          <option value="vegetariana">Vegetariana</option>
+          <option value="baja en calorías">Baja en Calorías</option>
+          <option value="sin gluten">Sin Gluten</option>
+          <option value="keto">Keto</option>
+          <option value="alta en proteínas">Alta en Proteínas</option>
+        </select>
 
-      <label className="portions-label">Porciones:</label>
-      <input 
-        type="number" 
-        min="1" 
-        max="10" 
-        value={portions} 
-        onChange={(e) => setPortions(e.target.value)} 
-        className="portions-input"
-      />
+        <label className="portions-label">Porciones:</label>
+        <input 
+          type="number" 
+          min="1" 
+          max="10" 
+          value={portions} 
+          onChange={(e) => setPortions(e.target.value)} 
+          className="portions-input"
+        />
+        {/* Botón para seleccionar electrodomésticos */}
+        <button className="appliance-button" onClick={() => setShowApplianceModal(true)}>
+          Electrodomésticos
+        </button>
+      </div>
 
-      {/* Formulario para añadir ingredientes */}
-      <form onSubmit={handleAddIngredient} className="ingredient-form">
-        <input type="text" placeholder="Ej: Pollo, arroz, limón..." className="ingredient-field" />
-        <button type="submit" className="ingredient-button">Añadir</button>
-      </form>
+     <div className="ingredients-container">
+         {/* Formulario para añadir ingredientes */}
+        <form onSubmit={handleAddIngredient} className="ingredient-form">
+          <input type="text" placeholder="Ej: Pollo, arroz, limón..." className="ingredient-field" />
+          <button type="submit" className="ingredient-button">Añadir</button>
+        </form>
 
-      {/* Lista de ingredientes */}
-      {ingredients.length > 0 && (
-        <div className="ingredient-list-container">
-          <ul className="ingredient-list">
-            {ingredients.map((ingredient, index) => (
-              <li key={index} className="ingredient-item">{ingredient}</li>
-            ))}
-          </ul>
-          <button onClick={() => setIngredients([])} className="ingredient-button-clear">X</button>
-        </div>
-      )}
-
-      {/* Botón para seleccionar electrodomésticos */}
-      <button className="appliance-button" onClick={() => setShowApplianceModal(true)}>
-        Seleccionar Electrodomésticos
-      </button>
+        {/* Lista de ingredientes */}
+        {ingredients.length > 0 && (
+          <div className="ingredient-list-container">
+            <ul className="ingredient-list">
+              {ingredients.map((ingredient, index) => (
+                <li key={index} className="ingredient-item">{ingredient}</li>
+              ))}
+            </ul>
+            <button onClick={() => setIngredients([])} className="ingredient-button-clear">X</button>
+          </div>
+        )}
+     </div>
 
       {/* Modal de electrodomésticos */}
       {showApplianceModal && (

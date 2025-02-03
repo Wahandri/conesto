@@ -44,7 +44,8 @@ export async function POST(request) {
         "tips": "Consejo opcional"
       }
 
-      ### Los steps deben ser claros y detallados, incluyendo cantidades y tiempos de cocción.
+      ### Los ingredientes estaran acompañados de las cantidades necesarias.
+      ### Los steps deben ser claros y detallados, tiempos de cocción.
       
       Genera una receta completamente nueva basada en estos parámetros. Este intento (${randomFactor}) debe ser diferente.
     `;
