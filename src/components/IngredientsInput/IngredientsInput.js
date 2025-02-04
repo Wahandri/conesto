@@ -64,41 +64,49 @@ const IngredientInput = () => {
     <div className="ingredient-input">
       {/* Selectores de filtros */}
       <div className="filters-container">
-        <label className="difficulty-label">Dificultad:</label>
-        <select className="difficulty-select" value={difficulty} onChange={(e) => setDifficulty(e.target.value)}>
-          <option value="rápida">Rápida/Sencilla</option>
-          <option value="media">Media</option>
-          <option value="pro">Pro</option>
-        </select>
+        <div>
+          <label className="difficulty-label">Dificultad:</label>
+          <select className="difficulty-select" value={difficulty} onChange={(e) => setDifficulty(e.target.value)}>
+            <option value="rápida">Rápida/Sencilla</option>
+            <option value="media">Media</option>
+            <option value="pro">Pro</option>
+          </select>
+        </div>
 
-        <label className="meal-label">Tipo de comida:</label>
-        <select className="meal-select" value={mealType} onChange={(e) => setMealType(e.target.value)}>
-          <option value="desayuno">Desayuno</option>
-          <option value="comida">Comida</option>
-          <option value="cena">Cena</option>
-          <option value="postre">Postre</option>
-        </select>
+        <div>
+          <label className="meal-label">Tipo de comida:</label>
+          <select className="meal-select" value={mealType} onChange={(e) => setMealType(e.target.value)}>
+            <option value="desayuno">Desayuno</option>
+            <option value="comida">Comida</option>
+            <option value="cena">Cena</option>
+            <option value="postre">Postre</option>
+          </select>
+        </div>
 
-        <label className="meal-label">Dieta:</label>
-        <select className="diet-select" value={diet} onChange={(e) => setDiet(e.target.value)}>
-          <option value="ninguna">Ninguna</option>
-          <option value="vegana">Vegana</option>
-          <option value="vegetariana">Vegetariana</option>
-          <option value="baja en calorías">Baja en Calorías</option>
-          <option value="sin gluten">Sin Gluten</option>
-          <option value="keto">Keto</option>
-          <option value="alta en proteínas">Alta en Proteínas</option>
-        </select>
+        <div>
+          <label className="meal-label">Dieta:</label>
+          <select className="diet-select" value={diet} onChange={(e) => setDiet(e.target.value)}>
+            <option value="ninguna">Ninguna</option>
+            <option value="vegana">Vegana</option>
+            <option value="vegetariana">Vegetariana</option>
+            <option value="baja en calorías">Baja en Calorías</option>
+            <option value="sin gluten">Sin Gluten</option>
+            <option value="keto">Keto</option>
+            <option value="alta en proteínas">Alta en Proteínas</option>
+          </select>
+        </div>
 
-        <label className="meal-label">Porciones:</label>
-        <input 
-          type="number" 
-          min="1" 
-          max="10" 
-          value={portions} 
-          onChange={(e) => setPortions(e.target.value)} 
-          className="portions-input"
-        />
+        <div>
+          <label className="meal-label">Porciones:</label>
+          <input
+            type="number"
+            min="1"
+            max="10"
+            value={portions}
+            onChange={(e) => setPortions(e.target.value)}
+            className="portions-input"
+          />
+        </div>
         {/* Botón para seleccionar electrodomésticos */}
         <button className="appliance-button" onClick={() => setShowApplianceModal(true)}>
           Electrodomésticos

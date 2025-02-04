@@ -1,7 +1,9 @@
 .filters-container {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
   justify-content: center;
   gap: 20px;
+  width: 90%;
   margin-left: 20px;
   margin-right: 20px;
   align-items: center;
@@ -218,4 +220,13 @@
 
 .modal button:hover {
   background-color: #af7405;
+}
+
+
+
+
+@media (max-width: 768px) {
+  .filters-container {
+    grid-template-columns: 1fr;
+  }
 }
