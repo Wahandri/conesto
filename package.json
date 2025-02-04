@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-  "dev": "next dev",
-  "build": "next build",
-  "start": "next start",
-  "lint": "next lint"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
     "next": "15.1.6",
@@ -20,6 +20,7 @@
     "eslint-config-next": "15.1.6"
   },
   "engines": {
-    "node": ">=18.0.0" 
-  }
+    "node": ">=18.0.0"
+  },
+  "main": "out/_worker.js"
 }

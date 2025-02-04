@@ -1,0 +1,10 @@
+name = "conesto"
+type = "javascript"  # o "webpack" si usas Webpack
+account_id = "TU_CLOUDFLARE_ACCOUNT_ID"
+workers_dev = true
+compatibility_date = "2025-02-04"
+
+[build]
+command = "npm run build"
+upload.format = "service-worker"
+upload.dir = "./out"
