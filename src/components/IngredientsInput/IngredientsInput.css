@@ -8,7 +8,11 @@
   margin-top: 20px;
   padding: 10px;
   border-radius: 5px;
-  border: 1px solid #ccc;
+}
+
+.meal-label {
+  font-weight: bold;
+  margin-right: 10px;
 }
 
 .ingredients-container {
@@ -27,6 +31,24 @@
     flex-direction: column;
     align-items: center;
     gap: 10px;
+  } .ingredient-input input {
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 1rem;
+  } .ingredient-input select {
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 1rem;
+  } .ingredient-input button {
+    padding: 10px 20px;
+    background-color: #ce8703;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+  } .ingredient-input button:hover {
+    background-color: #af7405;
   }
   
   .ingredient-form {
@@ -34,19 +56,36 @@
     gap: 10px;
     justify-content: center;
     width:100px;
+  } .ingredient-form input {
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 1rem;
+  } .ingredient-form select {
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 1rem;
+  } .ingredient-form button {
+    padding: 10px 20px;
+    background-color: #ce8703;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+  } .ingredient-form button:hover {
+    background-color: #af7405;
   }
   
   .ingredient-field {
     flex: 1;
     padding: 10px;
-    border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 1rem;
   }
   
   .ingredient-button, .generate-button {
     padding: 10px 20px;
-    background-color: #0070f3;
+    background-color: #ce8703;
     color: white;
     border: none;
     border-radius: 4px;
@@ -55,7 +94,7 @@
   }
   
   .ingredient-button:hover, .generate-button:hover {
-    background-color: #005bb5;
+    background-color: #ce8703;
   }
 
 
@@ -69,33 +108,24 @@
     cursor: pointer;
     font-size: 1rem;
   }
-  
-  .ingredient-button-clear:hover {
-    background-color: rgba(214, 6, 2, 0.96);;
-  }
 
   /* Boton generar nueva receta */
   .new-recipe-button {
     margin-top: 15px;
     padding: 10px 20px;
-    background-color: #ff9800;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     font-size: 1rem;
   }
-  
-  .new-recipe-button:hover {
-    background-color: #e68900;
-  }
+
   
 
   /* CSS lista de ingredientes */
   .ingredient-list-container {
     margin-top: 20px;
     padding: 10px;
-    background-color: #f8f9fa;
     border-radius: 5px;
     display: inline-block;
   }
@@ -111,11 +141,12 @@
   
   .ingredient-item {
     display: inline-block;
-    background: #0070f3;
-    color: white;
+    background: #ffffff;
+    color: black;
     padding: 5px 10px;
     margin: 5px;
     border-radius: 4px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
   }
 
 /* CSS para el selector de dificultad */
@@ -132,7 +163,6 @@
   margin-top: 5px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  background-color: white;
   font-size: 16px;
   cursor: pointer;
   text-align: left;
@@ -178,7 +208,7 @@
 .modal button {
   margin-top: 15px;
   padding: 8px 12px;
-  background-color: #0070f3;
+  background-color: #ce8703;
   color: white;
   border: none;
   border-radius: 4px;
@@ -187,5 +217,5 @@
 }
 
 .modal button:hover {
-  background-color: #005bb5;
+  background-color: #af7405;
 }

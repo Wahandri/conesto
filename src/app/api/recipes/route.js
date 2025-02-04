@@ -44,6 +44,7 @@ export async function POST(request) {
         "tips": "Consejo opcional"
       }
 
+      ### 
       ### Los ingredientes estaran acompañados de las cantidades necesarias.
       ### Los steps deben ser claros y detallados, tiempos de cocción.
       

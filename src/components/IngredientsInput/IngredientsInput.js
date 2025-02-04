@@ -79,7 +79,7 @@ const IngredientInput = () => {
           <option value="postre">Postre</option>
         </select>
 
-        <label className="diet-label">Dieta:</label>
+        <label className="meal-label">Dieta:</label>
         <select className="diet-select" value={diet} onChange={(e) => setDiet(e.target.value)}>
           <option value="ninguna">Ninguna</option>
           <option value="vegana">Vegana</option>
@@ -90,7 +90,7 @@ const IngredientInput = () => {
           <option value="alta en proteínas">Alta en Proteínas</option>
         </select>
 
-        <label className="portions-label">Porciones:</label>
+        <label className="meal-label">Porciones:</label>
         <input 
           type="number" 
           min="1" 
@@ -106,6 +106,7 @@ const IngredientInput = () => {
       </div>
 
      <div className="ingredients-container">
+      <h3>Ingredientes:</h3>
          {/* Formulario para añadir ingredientes */}
         <form onSubmit={handleAddIngredient} className="ingredient-form">
           <input type="text" placeholder="Ej: Pollo, arroz, limón..." className="ingredient-field" />
