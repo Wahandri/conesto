@@ -3,20 +3,25 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
+    "dev": "next dev",
+    "build": "next build && next export", 
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "preview": "serve out"
   },
   "dependencies": {
     "next": "15.1.6",
     "openai": "^4.82.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "serve": "^14.2.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "eslint": "^9",
     "eslint-config-next": "15.1.6"
+  },
+  "engines": {
+    "node": "18.x"
   }
 }
